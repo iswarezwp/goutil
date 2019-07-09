@@ -13,11 +13,13 @@ const (
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
-func RandStr(n int) string {
+// 为了多线程性能考虑，需要调用者传入一个Rand对象，每个线程自己创建一个
+//
+func RandStr(n int, randSrc *rand.Rand) string {
 	b := make([]byte, n)
-	for i, cache, remain := n-1, rand.Int63(), letterIdxMax; i >= 0; {
+	for i, cache, remain := n-1, randSrc.Int63(), letterIdxMax; i >= 0; {
 		if remain == 0 {
-			cache, remain = rand.Int63(), letterIdxMax
+			cache, remain = randSrc.Int63(), letterIdxMax
 		}
 		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
 			b[i] = letterBytes[idx]
