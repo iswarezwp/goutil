@@ -13,8 +13,12 @@ const (
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
-// 为了多线程性能考虑，需要调用者传入一个Rand对象，每个线程自己创建一个
-//
+/**
+为了多线程性能考虑，需要调用者传入一个rand.Rand对象，每个routine自己创建一个
+例如：
+    rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+    RandStr（12， rnd)
+**/
 func RandStr(n int, randSrc *rand.Rand) string {
 	b := make([]byte, n)
 	for i, cache, remain := n-1, randSrc.Int63(), letterIdxMax; i >= 0; {
